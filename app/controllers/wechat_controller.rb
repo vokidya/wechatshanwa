@@ -11,15 +11,19 @@ class WechatController < ApplicationController
         #xml_file.css("//ToUserName")[0].content
         #check_wechat_signature
         Wechatlog.create(:logkey=>"visiting",:logvalue=>DateTime.now.to_i)
-        xml = Nokogiri::XML(request.body.read)
-        @content = xml.css("//MediaId")[0].content
-        @client_user = xml.css("//FromUserName")[0].content
-        @server_user = xml.css("//ToUserName")[0].content
-        #@render :text => result
 
-        Wechatlog.create(:logkey=>"mediaid",:logvalue=>@content)
-        Wechatlog.create(:logkey=>"client_user",:logvalue=>@client_user)
-        Wechatlog.create(:logkey=>"server_user",:logvalue=>@server_user)
+        xml_body = request.body.read
+        Wechatlog.create(:logkey=>"request.body.read",:logvalue=>xml_body.to_s)
+        xml = Nokogiri::XML(xml_body)
+        Wechatlog.create(:logkey=>"save after xml",:logvalue=>"after xml")
+        @content = xml.css("//MediaId")[0].content
+        Wechatlog.create(:logkey=>"content",:logvalue=>@content)
+
+        @client_user = xml.css("//FromUserName")[0].content
+        Wechatlog.create(:logkey=>"content",:logvalue=>@client_user)
+        @server_user = xml.css("//ToUserName")[0].content
+        Wechatlog.create(:logkey=>"content",:logvalue=>@server_user)
+        #@render :text => result
     end
 
     def show_log
