@@ -10,7 +10,7 @@ class WechatController < ApplicationController
         #binding.pry
         #xml_file.css("//ToUserName")[0].content
         #check_wechat_signature
-
+        Wechatlog.create(:logkey=>"visiting",:logvalue=>DateTime.now.to_i)
         xml = Nokogiri::XML(request.body.read)
         @content = xml.css("//MediaId")[0].content
         @client_user = xml.css("//FromUserName")[0].content
