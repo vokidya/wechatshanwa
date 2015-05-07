@@ -9,6 +9,8 @@ class WechatController < ApplicationController
     def post_server
         #binding.pry
         #xml_file.css("//ToUserName")[0].content
+        check_wechat_signature
+        
         xml = Nokogiri::XML(request.body.read)
         @content = xml.css("//MediaId")[0].content
         @client_user = xml.css("//FromUserName")[0].content
