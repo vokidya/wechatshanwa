@@ -2,7 +2,7 @@ class WechatController < ApplicationController
     #before_filter :check_wechat_signature
 
     def server
-        # check_wechat_signature
+        check_wechat_signature
         render :text => params[:echostr]
     end
 
@@ -26,6 +26,7 @@ class WechatController < ApplicationController
 
     private
     def check_wechat_signature
+        Wechatlog.create(:logkey=>"check",:logvalue=> DateTime.now)
         array = ["weixin", params[:timestamp], params[:nonce]].sort
         render :text => "Forbidden", :status => 403 if params[:signature] != Digest::SHA1.hexdigest(array.join)
     end
