@@ -7,9 +7,9 @@ class WechatController < ApplicationController
     end
 
     def post_server
-        binding.pry
+        #binding.pry
         #xml_file.css("//ToUserName")[0].content
-        check_wechat_signature
+        #check_wechat_signature
         Wechatlog.create(:logkey=>"visiting",:logvalue=>DateTime.now.to_i)
         Wechatlog.create(:logkey=>"params",:logvalue=>params.to_s)
 
