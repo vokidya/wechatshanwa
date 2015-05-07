@@ -5,12 +5,12 @@ class WechatController < ApplicationController
         #render :text => "get"
     end
 
-    def post
+    def post_server
         #binding.pry
         #xml_file.css("//ToUserName")[0].content
         xml = Nokogiri::XML(request.body.read)
-        result = xml.css("//MediaId")[0].content
-        render :text => result
+        @content = xml.css("//MediaId")[0].content
+        #@render :text => result
     end
 
     # private
