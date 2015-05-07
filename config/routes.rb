@@ -54,4 +54,5 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
   get 'wechat/server' => 'wechat#server'
+  post 'wechat/server' => 'wechat#post'
 end

@@ -43,3 +43,11 @@ group :development, :test do
   gem 'spring'
 end
 
+group :test, :development do
+  gem 'pry'
+  gem 'pry-stack_explorer'
+  gem 'pry-byebug'
+end
+
+gem 'nokogiri', '~> 1.6.6.2'
+
