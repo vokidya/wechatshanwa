@@ -1,5 +1,5 @@
 class WechatController < ApplicationController
-    before_filter :check_wechat_signature
+    #before_filter :check_wechat_signature
 
     def server
         # check_wechat_signature
@@ -14,6 +14,14 @@ class WechatController < ApplicationController
         @client_user = xml.css("//FromUserName")[0].content
         @server_user = xml.css("//ToUserName")[0].content
         #@render :text => result
+
+        Wechatlog.create(:logkey=>"mediaid",:logvalue=>@content)
+        Wechatlog.create(:logkey=>"client_user",:logvalue=>@client_user)
+        Wechatlog.create(:logkey=>"server_user",:logvalue=>@server_user)
+    end
+
+    def show_log
+        render :json => Wechatlog.all
     end
 
     private
