@@ -51,3 +51,5 @@ end
 
 gem 'nokogiri', '~> 1.6.6.2'
 
+gem 'actionpack-xml_parser', github: 'rails/actionpack-xml_parser'
+
