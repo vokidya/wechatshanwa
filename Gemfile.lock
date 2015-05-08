@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/rails/actionpack-xml_parser.git
+  revision: 405522d3acd6ce850f484d12a7b971c79662d27a
+  specs:
+    actionpack-xml_parser (1.0.2)
+      actionpack (>= 4.0.0, < 5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -155,6 +162,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  actionpack-xml_parser!
   byebug
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
