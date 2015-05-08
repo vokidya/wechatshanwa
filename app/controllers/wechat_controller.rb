@@ -10,7 +10,7 @@ class WechatController < ApplicationController
         xml_body = params[:xml]
     
         @media_id = xml_body["MediaId"]
-        Wechatlog.create(:logkey=>"content",:logvalue=>@content)
+        Wechatlog.create(:logkey=>"media_id",:logvalue=>@media_id)
         @client_user = xml_body["FromUserName"]
         @server_user = xml_body["ToUserName"]
     end
