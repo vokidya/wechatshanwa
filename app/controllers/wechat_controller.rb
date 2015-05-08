@@ -8,11 +8,16 @@ class WechatController < ApplicationController
 
     def post_server
         xml_body = params[:xml]
-    
+        
         @media_id = xml_body["MediaId"]
-        Wechatlog.create(:logkey=>"media_id",:logvalue=>@media_id)
         @client_user = xml_body["FromUserName"]
         @server_user = xml_body["ToUserName"]
+
+        if Wechatlog.last.logkey == "question"
+            Wechatlog.create(:logkey=>"answer",:logvalue=>@media_id)
+        else
+            Wechatlog.create(:logkey=>"question",:logvalue=>@media_id)
+        end
     end
 
     def show_log
