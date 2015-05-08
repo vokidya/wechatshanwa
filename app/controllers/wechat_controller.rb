@@ -9,7 +9,8 @@ class WechatController < ApplicationController
     def post_server
         xml_body = params[:xml]
         
-        @media_id = xml_body["MediaId"]
+        #@media_id = xml_body["MediaId"]
+        @media_id = "ledx50zhdLZASurmsow4n7llZUJzY7M8HHzYOMyVsNfrAs5_bztkxFuQ_lsX3Ymz"
         @client_user = xml_body["FromUserName"]
         @server_user = xml_body["ToUserName"]
 
