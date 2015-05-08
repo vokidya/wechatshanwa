@@ -13,6 +13,9 @@ class WechatController < ApplicationController
         Wechatlog.create(:logkey=>"visiting",:logvalue=>DateTime.now.to_i)
         Wechatlog.create(:logkey=>"params",:logvalue=>params.to_s)
 
+        Wechatlog.create(:logkey=>"params_xml",:logvalue=>params[:xml])
+        Wechatlog.create(:logkey=>"params_xml",:logvalue=>params["xml"])
+
         xml_body = request.body.read
         Wechatlog.create(:logkey=>"request.body.read",:logvalue=>xml_body.to_s)
         xml = Nokogiri::XML(xml_body)
