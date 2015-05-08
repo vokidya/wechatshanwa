@@ -30,9 +30,13 @@ class WechatController < ApplicationController
         # Wechatlog.create(:logkey=>"content",:logvalue=>@server_user)
 
         xml_body = params[:xml]
+        Wechatlog.create(:logkey=>"xml_body",:logvalue=>xml_body)
         @content = xml_body["MediaId"]
+        Wechatlog.create(:logkey=>"content",:logvalue=>@content)
         @client_user = xml_body["FromUserName"]
+        Wechatlog.create(:logkey=>"client_user",:logvalue=>@client_user)
         @server_user = xml_body["ToUserName"]
+        Wechatlog.create(:logkey=>"server_user",:logvalue=>@server_user)
 
     end
 
