@@ -56,4 +56,5 @@ Rails.application.routes.draw do
   get 'wechat/server' => 'wechat#server'
   post 'wechat/server' => 'wechat#post_server'
   get 'wechat/log' => 'wechat#show_log'
+  get 'wechat/log/delete' => 'wechat#delete_log'
 end
