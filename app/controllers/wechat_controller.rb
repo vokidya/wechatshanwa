@@ -17,20 +17,20 @@ class WechatController < ApplicationController
             if WechatlogStatus.all.count != 0
                 record = Wechatlog.first
                 WechatlogStatus.all.delete_all
-                return 
+                @media_id = record.logvalue
+            else
+                first = Wechatlog.first.id.to_i
+                last = Wechatlog.last.id.to_i
+                rand_id = rand(first..last)
+
+                record = Wechatlog.find(rand_id)
+                if record.logkey != "question"
+                    record = Wechatlog.find(rand_id - 1)
+                end
+                @media_id = record.logvalue
+
+                WechatlogStatus.create(:log_id => record.id)
             end
-
-            first = Wechatlog.first.id.to_i
-            last = Wechatlog.last.id.to_i
-            rand_id = rand(first..last)
-
-            record = Wechatlog.find(rand_id)
-            if record.logkey != "question"
-                record = Wechatlog.find(rand_id - 1)
-            end
-            @media_id = record.logvalue
-
-            WechatlogStatus.create(:log_id => record.id)
         else
             @media_id = xml_body["MediaId"]
 
@@ -53,7 +53,6 @@ class WechatController < ApplicationController
 
     private
     def check_wechat_signature
-        Wechatlog.create(:logkey=>"check",:logvalue=> DateTime.now)
         array = ["weixin", params[:timestamp], params[:nonce]].sort
         render :text => "Forbidden", :status => 403 if params[:signature] != Digest::SHA1.hexdigest(array.join)
     end
