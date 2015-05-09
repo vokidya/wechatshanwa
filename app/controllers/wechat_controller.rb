@@ -14,7 +14,16 @@ class WechatController < ApplicationController
         msgType = xml_body["MsgType"]
 
         if (msgType == "text")
-            @media_id = Wechatlog.find_by(:logkey=>"question").logvalue
+            first = Wechatlog.first.id.to_i
+            last = Wechatlog.last.id.to_i
+            rand_id = rand(first..last)
+
+            record = Wechatlog.find(rand_id)
+            if record.logkey == "answer"
+                @media_id = record.logvalue
+            else
+                @media_id = Wechatlog.find(rand_id - 1).logvalue
+            end
         else
             @media_id = xml_body["MediaId"]
 
