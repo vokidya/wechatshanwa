@@ -16,8 +16,8 @@ class WechatController < ApplicationController
         if (msgType == "text")
             if WechatlogStatus.all.count != 0
                 a_record = Wechatlog.find(WechatlogStatus.first.log_id.to_i + 1)
-                @media_id = a_record.logvalue
                 WechatlogStatus.all.delete_all
+                @media_id = a_record.logvalue
             else
                 first = Wechatlog.first.id.to_i
                 last = Wechatlog.last.id.to_i
