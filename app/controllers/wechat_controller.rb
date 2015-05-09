@@ -27,10 +27,10 @@ class WechatController < ApplicationController
         else
             @media_id = xml_body["MediaId"]
 
-            if Wechatlog.last.logkey == "question"
-                Wechatlog.create(:logkey=>"answer",:logvalue=>@media_id)
-            else
+            if Wechatlog.all.count == 0 || Wechatlog.last.logkey == "answer" 
                 Wechatlog.create(:logkey=>"question",:logvalue=>@media_id)
+            else
+                Wechatlog.create(:logkey=>"answer",:logvalue=>@media_id)
             end
         end
     end
