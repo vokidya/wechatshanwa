@@ -27,9 +27,9 @@ class WechatController < ApplicationController
                 if q_record.logkey != "question"
                     q_record = Wechatlog.find(rand_id - 1)
                 end
-                @media_id = q_record.logvalue
-
                 WechatlogStatus.create(:log_id => q_record.id)
+                
+                @media_id = q_record.logvalue   
             end
         else
             @media_id = xml_body["MediaId"]
