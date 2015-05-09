@@ -15,21 +15,21 @@ class WechatController < ApplicationController
 
         if (msgType == "text")
             if WechatlogStatus.all.count != 0
-                record = Wechatlog.find(WechatlogStatus.first.log_id.to_i + 1)
-                @media_id = record.logvalue
+                a_record = Wechatlog.find(WechatlogStatus.first.log_id.to_i + 1)
+                @media_id = a_record.logvalue
                 WechatlogStatus.all.delete_all
             else
                 first = Wechatlog.first.id.to_i
                 last = Wechatlog.last.id.to_i
                 rand_id = rand(first..last)
 
-                record = Wechatlog.find(rand_id)
-                if record.logkey != "question"
-                    record = Wechatlog.find(rand_id - 1)
+                q_record = Wechatlog.find(rand_id)
+                if q_record.logkey != "question"
+                    q_record = Wechatlog.find(rand_id - 1)
                 end
-                @media_id = record.logvalue
+                @media_id = q_record.logvalue
 
-                WechatlogStatus.create(:log_id => record.id)
+                WechatlogStatus.create(:log_id => q_record.id)
             end
         else
             @media_id = xml_body["MediaId"]
