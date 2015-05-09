@@ -19,7 +19,7 @@ class WechatController < ApplicationController
             rand_id = rand(first..last)
 
             record = Wechatlog.find(rand_id)
-            if record.logkey == "answer"
+            if record.logkey == "question"
                 @media_id = record.logvalue
             else
                 @media_id = Wechatlog.find(rand_id - 1).logvalue
