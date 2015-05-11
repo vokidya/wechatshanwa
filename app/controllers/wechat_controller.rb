@@ -52,17 +52,18 @@ class WechatController < ApplicationController
 
     def delete_log
         Wechatlog.all.delete_all
-        render :text => "deleted"
-    end
-
-    def show_logstatus
-        render :json => WechatlogStatus.all
-    end
-
-    def delete_logstatus
         WechatlogStatus.all.delete_all
         render :text => "deleted"
     end
+
+    # def show_logstatus
+    #     render :json => WechatlogStatus.all
+    # end
+
+    # def delete_logstatus
+    #     WechatlogStatus.all.delete_all
+    #     render :text => "deleted"
+    # end
 
     private
     def check_wechat_signature
