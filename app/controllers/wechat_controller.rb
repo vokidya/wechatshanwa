@@ -19,18 +19,22 @@ class WechatController < ApplicationController
                 WechatlogStatus.all.delete_all
                 @media_id = a_record.logvalue
             else
-                first = Wechatlog.first.id.to_i
-                last = Wechatlog.last.id.to_i
-                rand_id = rand(first..last)
+                if Wechatlog.all.count != 0
+                    first = Wechatlog.first.id.to_i
+                    last = Wechatlog.last.id.to_i
+                    rand_id = rand(first..last)
 
-                q_record = Wechatlog.find(rand_id)
-                if q_record.logkey != "question"
-                    q_record = Wechatlog.find(rand_id - 1)
+                    q_record = Wechatlog.find(rand_id)
+                    if q_record.logkey != "question"
+                        q_record = Wechatlog.find(rand_id - 1)
+                    end
+                    WechatlogStatus.create(:log_id => q_record.id)
+                    
+                    @media_id = q_record.logvalue   
                 end
-                WechatlogStatus.create(:log_id => q_record.id)
                 
-                @media_id = q_record.logvalue   
             end
+
         else
             @media_id = xml_body["MediaId"]
 
@@ -48,6 +52,15 @@ class WechatController < ApplicationController
 
     def delete_log
         Wechatlog.all.delete_all
+        render :text => "deleted"
+    end
+
+    def show_logstatus
+        render :json => WechatlogStatus.all
+    end
+
+    def delete_logstatus
+        WechatlogStatus.all.delete_all
         render :text => "deleted"
     end
 
