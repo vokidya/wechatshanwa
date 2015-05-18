@@ -54,3 +54,10 @@ gem 'nokogiri', '~> 1.6.6.2'
 gem 'actionpack-xml_parser', github: 'rails/actionpack-xml_parser'
 
 gem 'multi_xml'
+
+gem 'httparty', '~> 0.13.3'
+
+gem 'bootstrap-sass', '~> 3.3.4'
+#gem 'sass-rails', '>= 3.2'
+
+

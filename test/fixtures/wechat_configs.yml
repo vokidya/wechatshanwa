@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  key_name: MyString
+  key_value: MyString
+  key_expired_time: MyString
+
+two:
+  key_name: MyString
+  key_value: MyString
+  key_expired_time: MyString

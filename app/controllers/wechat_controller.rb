@@ -13,44 +13,6 @@ class WechatController < ApplicationController
         @server_user = xml_body["ToUserName"]
         msgType = xml_body["MsgType"]
 
-        # if (msgType == "text")
-        #     if WechatlogStatus.all.count != 0
-        #         a_record = Wechatlog.find(WechatlogStatus.first.log_id.to_i + 1)
-        #         WechatlogStatus.all.delete_all
-        #         @media_id = a_record.logvalue
-        #     else
-        #         if Wechatlog.all.count != 0
-        #             first = Wechatlog.first.id.to_i
-        #             last = Wechatlog.last.id.to_i
-        #             rand_id = rand(first..last)
-
-        #             q_record = Wechatlog.find(rand_id)
-        #             if q_record.logkey != "question"
-        #                 q_record = Wechatlog.find(rand_id - 1)
-        #             end
-        #             WechatlogStatus.create(:log_id => q_record.id)
-                    
-        #             @media_id = q_record.logvalue   
-        #         end
-                
-        #     end
-
-        # else
-        #     @media_id = xml_body["MediaId"]
-
-        #     if Wechatlog.all.count == 0 || Wechatlog.last.logkey == "answer" 
-        #         Wechatlog.create(:logkey=>"question",:logvalue=>@media_id)
-        #     else
-        #         Wechatlog.create(:logkey=>"answer",:logvalue=>@media_id)
-        #     end
-        # end
-
-        # if (msgType == "text")
-        #     text_on_response
-        # else
-        #     voice_on_reponse (xml_body["MediaId"])
-        # end
-
         case msgType
         when "text"
             text_on_response
@@ -85,6 +47,69 @@ class WechatController < ApplicationController
     #     WechatlogStatus.all.delete_all
     #     render :text => "deleted"
     # end
+
+    def show_page
+        token = get_token
+
+        @token = token
+        jsapi_ticket = get_ticket (token)
+        noncestr = [*'a'..'z',*'0'..'9',*'A'..'Z'].sample(15).join
+        timestamp = Time.now.to_i.to_s
+        url = "http://cc60e35d.ngrok.io/wechat/page"
+
+        string1 = "jsapi_ticket=#{jsapi_ticket}&noncestr=#{noncestr}&timestamp=#{timestamp}&url=#{url}"
+        @signature = Digest::SHA1.hexdigest(string1)
+        @jsapi_ticket = jsapi_ticket
+        @noncestr = noncestr
+        @timestamp = timestamp
+    end
+
+    private 
+    def get_token
+        token_config = WechatConfig.find_by(:key_name=>"token")
+
+        if token_config.blank? 
+            token_config = WechatConfig.create(:key_name=>"token",:key_value=>"",:key_expired_time=>"0")
+        end
+
+        if token_config.key_expired_time.to_i > Time.now.to_i
+            token = token_config.key_value
+        else
+            appid = "wx5d6dd39846be546a"
+            secret = "c369efa33a2446a7af5fad77c80a4566"
+            token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=#{appid}&secret=#{secret}"
+            
+            token_result = HTTParty.get token_url
+            token = token_result.parsed_response["access_token"]
+            token_expired_time = Time.now.to_i + 7200
+
+            token_config.key_value = token
+            token_config.key_expired_time = token_expired_time
+            token_config.save
+        end
+    end
+
+    private 
+    def get_ticket (token)
+        ticket_config = WechatConfig.find_by(:key_name=>"ticket")
+
+        if ticket_config.blank? 
+            ticket_config = WechatConfig.create(:key_name=>"ticket",:key_value=>"",:key_expired_time=>"0")
+        end
+
+        if ticket_config.key_expired_time.to_i > Time.now.to_i
+            ticket = ticket_config.key_value
+        else
+            ticket_url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=#{token}&type=jsapi"
+            ticket_result = HTTParty.get ticket_url
+            ticket = ticket_result.parsed_response["ticket"]
+            ticket_expired_time = Time.now.to_i + 7200
+
+            ticket_config.key_value = ticket
+            ticket_config.key_expired_time = ticket_expired_time
+            ticket_config.save
+        end
+    end
 
     private 
     def voice_on_reponse (media_id)

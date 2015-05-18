@@ -1,0 +1,102 @@
+<div class="container">
+  <div class="jumbotron">
+    <h1>Ask Yourself</h1> 
+    token: <%=@token%>
+  </div>
+
+  <button type="button" class="btn btn-default share">Share</button>
+  <button type="button" class="btn btn-default record">Record</button>
+  <button type="button" class="btn btn-default stop_record">Stop</button>
+  <button type="button" class="btn btn-default upload_pic">Upload</button>
+</div>
+
+
+<script>
+
+    wx.config({
+        appId: "wx5d6dd39846be546a",
+        timestamp: '<%=@timestamp%>',
+        nonceStr: '<%=@noncestr%>',
+        signature: '<%=@signature%>',
+        jsApiList: [
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'onMenuShareQQ',
+            'onMenuShareWeibo',
+            'startRecord',
+            'stopRecord',
+            'onVoiceRecordEnd',
+            'playVoice',
+            'pauseVoice',
+            'stopVoice',
+            'onVoicePlayEnd',
+            'uploadVoice',
+            'downloadVoice',
+            'uploadImage',
+        ]
+    });
+
+
+    wx.ready(function(){
+        //alert("success");
+
+        wx.checkJsApi({
+            jsApiList: ['chooseImage'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+            success: function(res) {
+                // 以键值对的形式返回，可用的api值true，不可用为false
+                // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+                alert(JSON.stringify(res));
+            }
+        });
+        
+        jQuery(".record").click(function(){
+            alert("start");
+            // wx.startRecord();
+            wx.startRecord({
+              cancel: function () {
+                alert('用户拒绝授权录音');
+              }
+            });
+            alert("start_end");
+            //wx.startRecord();
+        });
+
+        jQuery(".upload_pic").click(function(){
+            alert("upload pics clicked");
+        
+            wx.chooseImage({
+                success: function (res) {
+                    var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                    alert("succcess");
+                },
+                error: function(){
+                    alert(error);
+                }
+            });
+
+        });
+
+        jQuery(".share").click(function(){
+            alert("share clicked");
+            wx.onMenuShareTimeline({
+                title: 'hello', // 分享标题
+                link: 'barbu', // 分享链接
+                imgUrl: 'sajah', // 分享图标
+                success: function () { 
+                    // 用户确认分享后执行的回调函数
+                    alert("hhdkj");
+                },
+                cancel: function () { 
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+        });
+
+    });
+
+
+    jQuery(function(){
+        //alert("hello");
+
+    });
+</script>

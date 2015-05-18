@@ -11,13 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150509013417) do
+ActiveRecord::Schema.define(version: 20150515090600) do
 
   create_table "studies", force: :cascade do |t|
     t.string   "question"
     t.string   "answer"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "wechat_configs", force: :cascade do |t|
+    t.string   "key_name"
+    t.string   "key_value"
+    t.string   "key_expired_time"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "wechatlog_statuses", force: :cascade do |t|
