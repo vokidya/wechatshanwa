@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150515090600) do
+ActiveRecord::Schema.define(version: 20150519110444) do
+
+  create_table "qa_voices", force: :cascade do |t|
+    t.string   "voice_type"
+    t.string   "voice_media_id"
+    t.string   "voice_text"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
 
   create_table "studies", force: :cascade do |t|
     t.string   "question"
@@ -38,8 +46,9 @@ ActiveRecord::Schema.define(version: 20150515090600) do
   create_table "wechatlogs", force: :cascade do |t|
     t.string   "logkey"
     t.string   "logvalue"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.string   "log_recognition"
   end
 
 end

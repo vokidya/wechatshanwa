@@ -61,4 +61,6 @@ Rails.application.routes.draw do
   get 'wechat/logstatus' => 'wechat#show_logstatus'
 
   get 'wechat/page' => 'wechat#show_page'
+
+  get 'wehcat/score' => 'wechat#show_score'
 end

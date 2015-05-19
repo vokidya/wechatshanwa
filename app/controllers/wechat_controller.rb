@@ -13,11 +13,14 @@ class WechatController < ApplicationController
         @server_user = xml_body["ToUserName"]
         msgType = xml_body["MsgType"]
 
+        #binding.pry
         case msgType
         when "text"
             text_on_response
         when "voice"
-            voice_on_reponse (xml_body["MediaId"])
+            media_id = xml_body["MediaId"]
+            recognition = xml_body["Recognition"]
+            voice_on_reponse(media_id, recognition)
         when "event"
             event = xml_body["Event"]
             event_key = xml_body["EventKey"]
@@ -30,11 +33,11 @@ class WechatController < ApplicationController
     end
 
     def show_log
-        render :json => Wechatlog.all
+        @voices = QaVoice.all
     end
 
     def delete_log
-        Wechatlog.all.delete_all
+        QaVoice.all.delete_all
         WechatlogStatus.all.delete_all
         render :text => "deleted"
     end
@@ -42,11 +45,6 @@ class WechatController < ApplicationController
     def show_logstatus
         render :json => WechatlogStatus.all
     end
-
-    # def delete_logstatus
-    #     WechatlogStatus.all.delete_all
-    #     render :text => "deleted"
-    # end
 
     def show_page
         token = get_token
@@ -62,6 +60,15 @@ class WechatController < ApplicationController
         @jsapi_ticket = jsapi_ticket
         @noncestr = noncestr
         @timestamp = timestamp
+    end
+
+    def show_score
+        # right = PinYin.of_string("我是一个八百年")
+        # try = PinYin.of_string("我是一个八遍")
+        index = 13
+        right = QaVoice.find(index).voice_text
+        try = QaVoice.find(index +1).voice_text
+        render :text => get_score(right,try).to_s
     end
 
     private 
@@ -112,13 +119,19 @@ class WechatController < ApplicationController
     end
 
     private 
-    def voice_on_reponse (media_id)
-        if Wechatlog.all.count == 0 || Wechatlog.last.logkey == "answer" 
-            Wechatlog.create(:logkey=>"question",:logvalue=>media_id)
-            @text = "问题已上传，请继续上传答案"
+    def voice_on_reponse (media_id , recognition)
+        if is_to_get_answer
+            right = QaVoice.find(get_question_id + 1).voice_text
+            try = recognition
+            @text = get_score(right,try).to_s
         else
-            Wechatlog.create(:logkey=>"answer",:logvalue=>media_id)
-            @text = "答案已上传"
+            if QaVoice.all.count == 0 || QaVoice.last.voice_type == "answer" 
+            QaVoice.create(:voice_type=>"question",:voice_media_id=>media_id, :voice_text => recognition)
+            @text = "问题已上传，请继续上传答案"
+            else
+                QaVoice.create(:voice_type=>"answer",:voice_media_id=>media_id, :voice_text => recognition)
+                @text = "答案已上传"
+            end
         end
 
         render 'wechat/text_template'
@@ -150,7 +163,7 @@ class WechatController < ApplicationController
                 end  
                 render 'wechat/voice_template'
             elsif event_key == "V1001_D"
-                Wechatlog.all.delete_all
+                QaVoice.all.delete_all
                 WechatlogStatus.all.delete_all
                 @text = "已清空数据库，请重新上传问题和答案"
                 render 'wechat/text_template'
@@ -163,31 +176,54 @@ class WechatController < ApplicationController
         WechatlogStatus.all.count != 0
     end
 
+    private 
+    def get_question_id
+        WechatlogStatus.first.log_id.to_i
+    end
+
     private
     def get_answer
         if WechatlogStatus.all.count != 0
-            a_record = Wechatlog.find(WechatlogStatus.first.log_id.to_i + 1)
+            a_record = QaVoice.find(WechatlogStatus.first.log_id.to_i + 1)
             WechatlogStatus.all.delete_all
 
-            a_record.logvalue
+            a_record.voice_media_id
         end
     end
 
     private 
     def get_rand_question
-        if Wechatlog.all.count != 0
-            first = Wechatlog.first.id.to_i
-            last = Wechatlog.last.id.to_i
+        if QaVoice.all.count != 0
+            first = QaVoice.first.id.to_i
+            last = QaVoice.last.id.to_i
             rand_id = rand(first..last)
 
-            q_record = Wechatlog.find(rand_id)
-            if q_record.logkey != "question"
-                q_record = Wechatlog.find(rand_id - 1)
+            q_record = QaVoice.find(rand_id)
+            if q_record.voice_type != "question"
+                q_record = QaVoice.find(rand_id - 1)
             end
 
             WechatlogStatus.create(:log_id => q_record.id)
-            q_record.logvalue
+            q_record.voice_media_id
         end
+    end
+
+    private 
+    def get_score (right_answer, try_answer)
+        right = PinYin.of_string(right_answer)
+        try = PinYin.of_string(try_answer)
+
+        puts "right: " + right.to_s
+        puts "try: " + try.to_s
+
+        count = 0
+        right.each do |right_word|
+            #binding.pry
+            unless try.index(right_word).blank?
+                count = count +1
+            end
+        end
+        count.to_f/right.length.to_f
     end
 
     private

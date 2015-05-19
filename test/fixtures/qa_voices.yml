@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  voice_type: MyString
+  voice_media_id: MyString
+  voice_text: MyString
+
+two:
+  voice_type: MyString
+  voice_media_id: MyString
+  voice_text: MyString

@@ -60,4 +60,6 @@ gem 'httparty', '~> 0.13.3'
 gem 'bootstrap-sass', '~> 3.3.4'
 #gem 'sass-rails', '>= 3.2'
 
+gem 'ruby-pinyin'
+
 
